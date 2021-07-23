@@ -11,13 +11,14 @@ class NavBar extends Component {
                 <Menu.Item header>
                     LaceSlick exists.
                 </Menu.Item>
-                <Menu.Item fitted >
+                {/* <Menu.Item fitted >
                     <Input list='projects' placeholder='Search...' icon='search' />
                     <datalist id='projects'>
                         <option value='Corruption Calculator'>Corruption Calculator</option>
                         <option value='Home'>Home</option>
                     </datalist>
-                </Menu.Item>
+                </Menu.Item> */}
+                <Menu.Item fluid href='https://teavana-t.github.io/'  > <Image src='http://stop-it.get-some.help/8RjBBvi.png' avatar size='mini' spaced='right' /> Powered by Teavana </Menu.Item>
                 <Menu.Menu position='right'>
                     <Dropdown item text="Tools">
                         <Dropdown.Menu>
