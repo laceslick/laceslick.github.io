@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Container, Divider, Header, Input, Label, Placeholder, Segment } from 'semantic-ui-react';
+import { Button, Container, Divider, Grid, Header, Input, Label, Placeholder, Segment } from 'semantic-ui-react';
 import update from 'immutability-helper';
 
-class StyledInput extends Component {
+class StyledInput extends Component<{ name: string, onChange: any, value: any, content: string }, {}> {
 
+  render() {
+    return (
+      <div style={{ width: '30%' }}>
+        <Input fluid labeled labelPosition='left' type='number' name={this.props.name} onChange={this.props.onChange} value={this.props.value} >
+          <Label style={{ width: '50%' }} content={this.props.content} />
+          <input step='0.01' />
+        </Input>
+      </div>
+    );
+  }
 }
 
 class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number, calcMon: number }>  {
@@ -26,10 +36,14 @@ class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number
     if (d.name === 'c') {
       if (d.value > 100) {
         newData = update(this.state, { [d.name]: { $set: 100 } });
-        console.log('>100');
       } else if (d.value < 0) {
         newData = update(this.state, { [d.name]: { $set: 0 } });
-        console.log('<0');
+      } else {
+        newData = update(this.state, { [d.name]: { $set: d.value } });
+      }
+    } else if (d.name === 'mod') {
+      if (d.value > 0) {
+        newData = update(this.state, { [d.name]: { $set: 0 } });
       } else {
         newData = update(this.state, { [d.name]: { $set: d.value } });
       }
@@ -66,11 +80,17 @@ class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number
         <Segment inverted>
           <Header as='h2' content='Corruption Calculator' />
           <Divider />
-          <Input type='number' name='mod' onChange={this.onChange} value={this.state.mod} />
-          <Input type='number' name='c' onChange={this.onChange} value={this.state.c} />
-          <Input type='number' name='mon' onChange={this.onChange} value={this.state.mon} />
-          <Label content={'It will take ' + this.state.calcMon + ' months to burn to the ground'} />
-          <Button onClick={() => this.calculateCoT(this.state.mod, this.state.c, this.state.mon)} />
+          <Grid style={{ padding: '14px', paddingTop: '0px' }} >
+            <Grid.Row>
+              <StyledInput name='mod' value={this.state.mod} onChange={this.onChange} content='Modifier' />
+            </Grid.Row>
+            <Grid.Row>
+              <StyledInput name='c' value={this.state.c} onChange={this.onChange} content='Corruption' />
+            </Grid.Row>
+            {/* <StyledInput name='mon' value={this.state.mon} onChange={this.onChange} content='Months' /> */}
+            <Label content={'It will take ' + this.state.calcMon + ' months to burn to the ground'} />
+            <Button onClick={() => this.calculateCoT(this.state.mod, this.state.c, this.state.mon)} />
+          </Grid>
         </Segment>
       </Container>
     );
