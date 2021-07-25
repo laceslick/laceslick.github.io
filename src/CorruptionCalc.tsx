@@ -41,12 +41,12 @@ class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number
       } else {
         newData = update(this.state, { [d.name]: { $set: d.value } });
       }
-    } else if (d.name === 'mod') {
-      if (d.value > 0) {
-        newData = update(this.state, { [d.name]: { $set: 0 } });
-      } else {
-        newData = update(this.state, { [d.name]: { $set: d.value } });
-      }
+    // } else if (d.name === 'mod') {
+    //   if (d.value > 0) {
+    //     newData = update(this.state, { [d.name]: { $set: 0 } });
+    //   } else {
+    //     newData = update(this.state, { [d.name]: { $set: d.value } });
+    //   }
     } else {
       newData = update(this.state, { [d.name]: { $set: d.value } });
     }
@@ -61,15 +61,33 @@ class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number
     let modifier: number = mod;
     let corruption: number = c;
     let months: number = mon;
-
-    for (
-      let i: number = corruption * 1;
-      i > 0;
-      i = i + ((i * 1 / -20) / 12) + (modifier * 1 / 12)
-    ) {
-      months++;
+    let newData: any;
+    if (corruption > mod*20)
+    {
+      for (
+        let i: number = corruption * 1;
+        i > 0 && i > (mod*20)+.5 ;
+        i = i + ((i * 1 / -20) / 12) + (modifier * 1 / 12)
+      ) {
+        months++;
+      }
+      newData = update(this.state, { calcMon: { $set: months } });
     }
-    const newData = update(this.state, { calcMon: { $set: months } });
+    else if (corruption < mod*20)
+    {
+      for (
+        let i: number = corruption * 1;
+        i < (mod*20)-.5;
+        i = i + ((i * 1 / -20) / 12) + (modifier * 1 / 12)
+      ) {
+        months++;
+      }
+      newData = update(this.state, { calcMon: { $set: months } });
+    }
+    else{
+    }
+
+
 
     this.setState(newData);
   }
@@ -88,7 +106,7 @@ class CorruptionCalc extends Component<{}, { mod: number, c: number, mon: number
               <StyledInput name='c' value={this.state.c} onChange={this.onChange} content='Corruption' />
             </Grid.Row>
             {/* <StyledInput name='mon' value={this.state.mon} onChange={this.onChange} content='Months' /> */}
-            <Label content={'It will take ' + this.state.calcMon + ' months to burn to the ground'} />
+            <Label content={'It will take ' + this.state.calcMon + ' months to reach equilibrium point, which is ' + this.state.mod*20 + ', within 0.5 corruption'} />
             <Button onClick={() => this.calculateCoT(this.state.mod, this.state.c, this.state.mon)} />
           </Grid>
         </Segment>
